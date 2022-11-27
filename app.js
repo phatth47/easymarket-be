@@ -40,18 +40,16 @@ const CreateAllFolder = require("./config/uploadFolderCreateScript");
 CreateAllFolder();
 
 // Database Connection
-mongoose
-  .connect(process.env.DATABASE, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  })
-  .then(() =>
-    console.log(
-      "==============Mongodb Database Connected Successfully=============="
-    )
-  )
-  .catch((err) => console.log("Database Not Connected !!!"));
+mongoose.connect(
+  process.env.DATABASE,
+  function (err) {
+    if (err) {
+      console.log("Mongo connected error!" + err);
+    } else {
+      console.log("Mongo connect successfully!");
+    }
+  }
+);
 
 // Middleware
 app.use(morgan("dev"));
