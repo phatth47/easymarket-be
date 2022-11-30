@@ -1,12 +1,12 @@
 const userModel = require("../models/users");
 const bcrypt = require("bcryptjs");
+const { toTitleCase, validateEmail } = require("../config/function");
 
 class User {
   async getAllUser(req, res) {
     try {
       let Users = await userModel
         .find({})
-        .populate("allProduct.id", "pName pImages pPrice")
         .populate("user", "name email")
         .sort({ _id: -1 });
       if (Users) {
@@ -36,32 +36,79 @@ class User {
   }
 
   async postAddUser(req, res) {
-    let { allProduct, user, amount, transactionId, address, phone } = req.body;
-    if (
-      !allProduct ||
-      !user ||
-      !amount ||
-      !transactionId ||
-      !address ||
-      !phone
-    ) {
-      return res.json({ message: "All filled must be required" });
+    let { name, email, password, cPassword , userRole} = req.body;
+    console.log(req.body);
+    let error = {};
+    if (!name || !email || !password || !cPassword) {
+      error = {
+        ...error,
+        name: "Filed must not be empty",
+        email: "Filed must not be empty",
+        password: "Filed must not be empty",
+        cPassword: "Filed must not be empty",
+      };
+      
+      console.log(error);
+
+      return res.json({ error });
+    }
+    if (name.length < 3 || name.length > 25) {
+      error = { ...error, name: "Name must be 3-25 charecter" };
+      return res.json({ error });
     } else {
-      try {
-        let newUser = new userModel({
-          allProduct,
-          user,
-          amount,
-          transactionId,
-          address,
-          phone,
-        });
-        let save = await newUser.save();
-        if (save) {
-          return res.json({ success: "User created successfully" });
+      if (validateEmail(email)) {
+        name = toTitleCase(name);
+        if ((password.length > 255) | (password.length < 6)) {
+          error = {
+            ...error,
+            password: "Password must be 6 characters",
+            name: "",
+            email: "",
+          };
+          return res.json({ error });
+        } else {
+          // If Email & Number exists in Database then:
+          try {
+            password = bcrypt.hashSync(password, 10);
+            const data = await userModel.findOne({ email: email });
+            if (data) {
+              error = {
+                ...error,
+                password: "",
+                name: "",
+                email: "Email already exists",
+              };
+              return res.json({ error });
+            } else {
+              let newUser = new userModel({
+                name,
+                email,
+                password,
+                userRole, 
+              });
+              newUser
+                .save()
+                .then((data) => {
+                  return res.json({
+                    success: "Account create successfully. Please login",
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          } catch (err) {
+            console.log(err);
+          }
         }
-      } catch (err) {
-        return res.json({ error: error });
+      } else {
+        error = {
+          ...error,
+          password: "",
+          name: "",
+          email: "Email is not valid",
+        };
+        return res.json({ error });
       }
     }
   }

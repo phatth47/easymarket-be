@@ -44,10 +44,10 @@ class Auth {
     } else {
       if (validateEmail(email)) {
         name = toTitleCase(name);
-        if ((password.length > 255) | (password.length < 8)) {
+        if ((password.length > 255) | (password.length < 6)) {
           error = {
             ...error,
-            password: "Password must be 8 charecter",
+            password: "Password must be 6 characters",
             name: "",
             email: "",
           };
