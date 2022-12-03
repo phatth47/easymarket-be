@@ -6,7 +6,9 @@ class User {
   async getAllUser(req, res) {
     try {
       let Users = await userModel
-        .find({})
+        .find({
+          deleted: 0,
+        })
         .populate("user", "name email")
         .sort({ _id: -1 });
       if (Users) {
@@ -132,12 +134,12 @@ class User {
   }
 
   async getDeleteUser(req, res) {
-    let { uId, status } = req.body;
-    if (!uId || !status) {
-      return res.json({ message: "All filled must be required" });
+    let { uId } = req.body;
+    if (!uId ) {
+      return res.json({ message: "UserID missing" });
     } else {
       let currentUser = userModel.findByIdAndUpdate(uId, {
-        status: status,
+        deleted: 1,
         updatedAt: Date.now(),
       });
       currentUser.exec((err, result) => {

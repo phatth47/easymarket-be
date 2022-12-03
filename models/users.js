@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    deleted: {
+      type: Number,
+      default: 0, // 0 = active, 1 = unactive
+    },
   },
   { timestamps: true }
 );
