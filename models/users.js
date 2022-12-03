@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     phoneNumber: {
-      type: Number,
+      type: String,
     },
     userImage: {
       type: String,

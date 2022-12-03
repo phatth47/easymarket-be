@@ -90,7 +90,7 @@ class User {
                 .save()
                 .then((data) => {
                   return res.json({
-                    success: "Account create successfully. Please login",
+                    success: "Account create successfully.",
                   });
                 })
                 .catch((err) => {
@@ -114,13 +114,14 @@ class User {
   }
 
   async postEditUser(req, res) {
-    let { uId, name, phoneNumber } = req.body;
-    if (!uId || !name || !phoneNumber) {
+    let { uId, name, phone } = req.body;
+    console.log(req.body);
+    if (!uId || !name || !phone) {
       return res.json({ message: "All filled must be required" });
     } else {
       let currentUser = userModel.findByIdAndUpdate(uId, {
         name: name,
-        phoneNumber: phoneNumber,
+        phoneNumber: phone,
         updatedAt: Date.now(),
       });
       currentUser.exec((err, result) => {
@@ -131,11 +132,11 @@ class User {
   }
 
   async getDeleteUser(req, res) {
-    let { oId, status } = req.body;
-    if (!oId || !status) {
+    let { uId, status } = req.body;
+    if (!uId || !status) {
       return res.json({ message: "All filled must be required" });
     } else {
-      let currentUser = userModel.findByIdAndUpdate(oId, {
+      let currentUser = userModel.findByIdAndUpdate(uId, {
         status: status,
         updatedAt: Date.now(),
       });
