@@ -165,7 +165,7 @@ class Product {
   async getDeleteProduct(req, res) {
     let { pId } = req.body;
     if (!pId) {
-      return res.json({ error: "All filled must be required" });
+      return res.json({ error:  "Có lỗi xảy ra. Vui lòng thử lại sau!"});
     } else {
       try {
         let deleteProductObj = await productModel.findById(pId);

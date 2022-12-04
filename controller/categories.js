@@ -1,6 +1,7 @@
 const { toTitleCase } = require("../config/function");
 const categoryModel = require("../models/categories");
 const fs = require("fs");
+const productModel = require("../models/products");
 
 class Category {
   async getAllCategory(req, res) {
@@ -79,25 +80,29 @@ class Category {
   async getDeleteCategory(req, res) {
     let { cId } = req.body;
     if (!cId) {
-      return res.json({ error: "All filled must be required" });
-    } else {
-      try {
-        let deletedCategoryFile = await categoryModel.findById(cId);
-        const filePath = `../server/public/uploads/categories/${deletedCategoryFile.cImage}`;
-
-        let deleteCategory = await categoryModel.findByIdAndDelete(cId);
-        if (deleteCategory) {
-          // Delete Image from uploads -> categories folder 
-          fs.unlink(filePath, (err) => {
-            if (err) {
-              console.log(err);
-            }
-            return res.json({ success: "Category deleted successfully" });
-          });
-        }
-      } catch (err) {
-        console.log(err);
+      return res.json({ error: "Có lỗi xảy ra. Vui lòng thử lại sau!" });
+    } 
+    
+    try {
+      let checkProductOfCateExists = await productModel.findOne({ pCategory: cId });
+      if (checkProductOfCateExists) {
+        return res.json({ error: "Không thể xóa khi có sản phẩm thuộc danh mục này!" });
       }
+      let deletedCategoryFile = await categoryModel.findById(cId);
+      const filePath = `../server/public/uploads/categories/${deletedCategoryFile.cImage}`;
+
+      let deleteCategory = await categoryModel.findByIdAndDelete(cId);
+      if (deleteCategory) {
+        // Delete Image from uploads -> categories folder 
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.log(err);
+          }
+          return res.json({ success: "Category deleted successfully" });
+        });
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 }
