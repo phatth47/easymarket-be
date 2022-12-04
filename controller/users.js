@@ -38,14 +38,15 @@ class User {
   }
 
   async postAddUser(req, res) {
-    let { name, email, password, cPassword , userRole} = req.body;
+    let { name, email, phone, password, cPassword , userRole} = req.body;
     console.log(req.body);
     let error = {};
-    if (!name || !email || !password || !cPassword) {
+    if (!name || !email || !phone || !password || !cPassword) {
       error = {
         ...error,
         name: "Filed must not be empty",
         email: "Filed must not be empty",
+        phone: "Filed must not be empty",
         password: "Filed must not be empty",
         cPassword: "Filed must not be empty",
       };
@@ -78,13 +79,14 @@ class User {
                 ...error,
                 password: "",
                 name: "",
-                email: "Email already exists",
+                email: "Email đã tồn tại.",
               };
               return res.json({ error });
             } else {
               let newUser = new userModel({
                 name,
                 email,
+                phoneNumber: phone,
                 password,
                 userRole, 
               });
@@ -92,7 +94,7 @@ class User {
                 .save()
                 .then((data) => {
                   return res.json({
-                    success: "Account create successfully.",
+                    success: "Thêm người dùng thành công.",
                   });
                 })
                 .catch((err) => {
