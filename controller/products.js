@@ -345,6 +345,36 @@ class Product {
       }
     }
   }
+
+  async getPromotedProducts(req, res) {
+    try {
+      let promotedProducts = await productModel
+        .find({ pOffer: { $gt: 0 } })
+        .sort({ pOffer: -1 })
+        .limit(10);
+      if (promotedProducts) {
+        console.log(promotedProducts);
+        return res.json({ Products: promotedProducts });
+      }
+    } catch (err) {
+      return res.json({ err: "something wrong" });
+    }
+  }
+
+  async getBestSellingProducts(req, res) {
+    try {
+      let bestSellerProducts = await productModel
+        .find({ pSold: { $gt: 0 } })
+        .sort({ pSold: -1 })
+        .limit(10);
+      if (bestSellerProducts) {
+        console.log(bestSellerProducts);
+        return res.json({ Products: bestSellerProducts });
+      }
+    } catch (err) {
+      return res.json({ err: "something wrong" });
+    }
+  }
 }
 
 const productController = new Product();

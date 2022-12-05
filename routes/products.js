@@ -28,4 +28,6 @@ router.post("/single-product", productController.getSingleProduct);
 router.post("/add-review", productController.postAddReview);
 router.post("/delete-review", productController.deleteReview);
 
+router.get("/get-promoted-products", productController.getPromotedProducts);
+router.get("/get-best-selling-products", productController.getBestSellingProducts);
 module.exports = router;
