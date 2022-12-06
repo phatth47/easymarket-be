@@ -165,7 +165,7 @@ class Product {
   async getDeleteProduct(req, res) {
     let { pId } = req.body;
     if (!pId) {
-      return res.json({ error:  "Có lỗi xảy ra. Vui lòng thử lại sau!"});
+      return res.json({ error: "Có lỗi xảy ra. Vui lòng thử lại sau!" });
     } else {
       try {
         let deleteProductObj = await productModel.findById(pId);
@@ -353,7 +353,7 @@ class Product {
         .sort({ pOffer: -1 })
         .limit(10);
       if (promotedProducts) {
-        console.log(promotedProducts);
+        // console.log(promotedProducts);
         return res.json({ Products: promotedProducts });
       }
     } catch (err) {
@@ -366,9 +366,9 @@ class Product {
       let bestSellerProducts = await productModel
         .find({ pSold: { $gt: 0 } })
         .sort({ pSold: -1 })
-        .limit(10);
+        .limit(12);
       if (bestSellerProducts) {
-        console.log(bestSellerProducts);
+        // console.log(bestSellerProducts);
         return res.json({ Products: bestSellerProducts });
       }
     } catch (err) {
